@@ -1,11 +1,27 @@
 -- ═══════════════════════════════════════════════════════════════
 --  SceneKyaHai  ·  Movie Ticket Booking System
---  Database Schema (MySQL 8+)
+--  Database Schema (MySQL 5.6+ / 8+)
+-- ═══════════════════════════════════════════════════════════════
+--  NOTE: Run this against an already-created database.
+--        - XAMPP/local:      first run `CREATE DATABASE scenekyahai;`
+--                            then `USE scenekyahai;` in phpMyAdmin,
+--                            or import this file with the DB selected.
+--        - InfinityFree etc: create the DB via control-panel UI,
+--                            select it in phpMyAdmin, then Import.
 -- ═══════════════════════════════════════════════════════════════
 
-DROP DATABASE IF EXISTS scenekyahai;
-CREATE DATABASE scenekyahai CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE scenekyahai;
+-- Clean slate: drop existing objects (safe to re-run)
+DROP VIEW      IF EXISTS vw_seat_status;
+DROP VIEW      IF EXISTS vw_show_details;
+DROP PROCEDURE IF EXISTS sp_book_seats;
+DROP TABLE     IF EXISTS booking_seats;
+DROP TABLE     IF EXISTS bookings;
+DROP TABLE     IF EXISTS shows;
+DROP TABLE     IF EXISTS seats;
+DROP TABLE     IF EXISTS screens;
+DROP TABLE     IF EXISTS theaters;
+DROP TABLE     IF EXISTS movies;
+DROP TABLE     IF EXISTS users;
 
 -- ─── 1. USERS ────────────────────────────────────────────────
 CREATE TABLE users (
@@ -143,67 +159,9 @@ LEFT JOIN booking_seats bs
       AND bs.seat_id    = se.seat_id;
 
 -- ═══════════════════════════════════════════════════════════════
---  STORED PROCEDURE — atomic seat booking
+--  NOTE: Booking atomicity is enforced in PHP inside a TRANSACTION
+--        (see api/booking.php) rather than in a stored procedure,
+--        so that the project works on any shared MySQL host.
+--        The FK constraints + UNIQUE key on booking_seats still
+--        guarantee integrity at the database layer.
 -- ═══════════════════════════════════════════════════════════════
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_book_seats //
-
-CREATE PROCEDURE sp_book_seats (
-    IN  p_user_id  INT,
-    IN  p_show_id  INT,
-    IN  p_seat_csv VARCHAR(500),     -- comma-separated seat_ids
-    OUT p_booking_id INT
-)
-BEGIN
-    DECLARE v_price      DECIMAL(8,2);
-    DECLARE v_count      INT;
-    DECLARE v_total      DECIMAL(10,2);
-    DECLARE v_conflicts  INT DEFAULT 0;
-
-    -- resolve show price
-    SELECT price INTO v_price FROM shows WHERE show_id = p_show_id;
-
-    -- temp table of requested seat_ids
-    DROP TEMPORARY TABLE IF EXISTS tmp_seats;
-    CREATE TEMPORARY TABLE tmp_seats (seat_id INT PRIMARY KEY);
-
-    SET @s = p_seat_csv;
-    WHILE LENGTH(@s) > 0 DO
-        SET @one = SUBSTRING_INDEX(@s, ',', 1);
-        INSERT IGNORE INTO tmp_seats VALUES (CAST(@one AS UNSIGNED));
-        IF LOCATE(',', @s) = 0 THEN SET @s = '';
-        ELSE SET @s = SUBSTRING(@s, LOCATE(',', @s) + 1);
-        END IF;
-    END WHILE;
-
-    -- check for collisions
-    SELECT COUNT(*) INTO v_conflicts
-    FROM   booking_seats bs
-    JOIN   bookings b ON b.booking_id = bs.booking_id
-    WHERE  b.show_id = p_show_id
-      AND  b.status  = 'CONFIRMED'
-      AND  bs.seat_id IN (SELECT seat_id FROM tmp_seats);
-
-    IF v_conflicts > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'One or more seats are already booked';
-    END IF;
-
-    SELECT COUNT(*) INTO v_count FROM tmp_seats;
-    SET v_total = v_count * v_price;
-
-    -- create booking
-    INSERT INTO bookings (user_id, show_id, total_amount, status)
-    VALUES (p_user_id, p_show_id, v_total, 'CONFIRMED');
-
-    SET p_booking_id = LAST_INSERT_ID();
-
-    -- link seats
-    INSERT INTO booking_seats (booking_id, seat_id)
-    SELECT p_booking_id, seat_id FROM tmp_seats;
-
-    DROP TEMPORARY TABLE tmp_seats;
-END //
-
-DELIMITER ;

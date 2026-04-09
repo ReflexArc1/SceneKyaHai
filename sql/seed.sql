@@ -1,8 +1,17 @@
 -- ═══════════════════════════════════════════════════════════════
 --  SceneKyaHai  ·  Sample data
---  Run AFTER schema.sql
+--  Run AFTER schema.sql, against the same database.
 -- ═══════════════════════════════════════════════════════════════
-USE scenekyahai;
+
+-- Wipe in reverse-FK order so this file is idempotent
+DELETE FROM booking_seats;
+DELETE FROM bookings;
+DELETE FROM shows;
+DELETE FROM seats;
+DELETE FROM screens;
+DELETE FROM theaters;
+DELETE FROM movies;
+DELETE FROM users;
 
 -- ─── USERS ───────────────────────────────────────────────────
 INSERT INTO users (name, email, phone, password) VALUES
@@ -52,33 +61,38 @@ INSERT INTO screens (theater_id, screen_name, total_seats) VALUES
 (2, 'SCREEN A',      60),
 (3, 'GOLD CLASS',    60);
 
--- ─── SEATS (auto-populate 60 per screen: rows A–F, 1–10) ────
+-- ─── SEATS (60 per screen: rows A–F, seats 1–10) ────────────
 --  Rows A–B = PREMIUM, C–E = STANDARD, F = RECLINER
-DELIMITER //
-CREATE PROCEDURE sp_fill_seats()
-BEGIN
-    DECLARE s INT DEFAULT 1;
-    DECLARE n INT;
-    WHILE s <= (SELECT MAX(screen_id) FROM screens) DO
-        SET n = 1;
-        WHILE n <= 10 DO
-            INSERT IGNORE INTO seats (screen_id, seat_row, seat_number, seat_type)
-            VALUES
-                (s, 'A', n, 'PREMIUM'),
-                (s, 'B', n, 'PREMIUM'),
-                (s, 'C', n, 'STANDARD'),
-                (s, 'D', n, 'STANDARD'),
-                (s, 'E', n, 'STANDARD'),
-                (s, 'F', n, 'RECLINER');
-            SET n = n + 1;
-        END WHILE;
-        SET s = s + 1;
-    END WHILE;
-END //
-DELIMITER ;
-
-CALL sp_fill_seats();
-DROP PROCEDURE sp_fill_seats;
+--  Plain INSERTs (no procedure) so it runs on any shared host.
+INSERT INTO seats (screen_id, seat_row, seat_number, seat_type) VALUES
+-- ── Screen 1 ──
+(1,'A',1,'PREMIUM'),(1,'A',2,'PREMIUM'),(1,'A',3,'PREMIUM'),(1,'A',4,'PREMIUM'),(1,'A',5,'PREMIUM'),(1,'A',6,'PREMIUM'),(1,'A',7,'PREMIUM'),(1,'A',8,'PREMIUM'),(1,'A',9,'PREMIUM'),(1,'A',10,'PREMIUM'),
+(1,'B',1,'PREMIUM'),(1,'B',2,'PREMIUM'),(1,'B',3,'PREMIUM'),(1,'B',4,'PREMIUM'),(1,'B',5,'PREMIUM'),(1,'B',6,'PREMIUM'),(1,'B',7,'PREMIUM'),(1,'B',8,'PREMIUM'),(1,'B',9,'PREMIUM'),(1,'B',10,'PREMIUM'),
+(1,'C',1,'STANDARD'),(1,'C',2,'STANDARD'),(1,'C',3,'STANDARD'),(1,'C',4,'STANDARD'),(1,'C',5,'STANDARD'),(1,'C',6,'STANDARD'),(1,'C',7,'STANDARD'),(1,'C',8,'STANDARD'),(1,'C',9,'STANDARD'),(1,'C',10,'STANDARD'),
+(1,'D',1,'STANDARD'),(1,'D',2,'STANDARD'),(1,'D',3,'STANDARD'),(1,'D',4,'STANDARD'),(1,'D',5,'STANDARD'),(1,'D',6,'STANDARD'),(1,'D',7,'STANDARD'),(1,'D',8,'STANDARD'),(1,'D',9,'STANDARD'),(1,'D',10,'STANDARD'),
+(1,'E',1,'STANDARD'),(1,'E',2,'STANDARD'),(1,'E',3,'STANDARD'),(1,'E',4,'STANDARD'),(1,'E',5,'STANDARD'),(1,'E',6,'STANDARD'),(1,'E',7,'STANDARD'),(1,'E',8,'STANDARD'),(1,'E',9,'STANDARD'),(1,'E',10,'STANDARD'),
+(1,'F',1,'RECLINER'),(1,'F',2,'RECLINER'),(1,'F',3,'RECLINER'),(1,'F',4,'RECLINER'),(1,'F',5,'RECLINER'),(1,'F',6,'RECLINER'),(1,'F',7,'RECLINER'),(1,'F',8,'RECLINER'),(1,'F',9,'RECLINER'),(1,'F',10,'RECLINER'),
+-- ── Screen 2 ──
+(2,'A',1,'PREMIUM'),(2,'A',2,'PREMIUM'),(2,'A',3,'PREMIUM'),(2,'A',4,'PREMIUM'),(2,'A',5,'PREMIUM'),(2,'A',6,'PREMIUM'),(2,'A',7,'PREMIUM'),(2,'A',8,'PREMIUM'),(2,'A',9,'PREMIUM'),(2,'A',10,'PREMIUM'),
+(2,'B',1,'PREMIUM'),(2,'B',2,'PREMIUM'),(2,'B',3,'PREMIUM'),(2,'B',4,'PREMIUM'),(2,'B',5,'PREMIUM'),(2,'B',6,'PREMIUM'),(2,'B',7,'PREMIUM'),(2,'B',8,'PREMIUM'),(2,'B',9,'PREMIUM'),(2,'B',10,'PREMIUM'),
+(2,'C',1,'STANDARD'),(2,'C',2,'STANDARD'),(2,'C',3,'STANDARD'),(2,'C',4,'STANDARD'),(2,'C',5,'STANDARD'),(2,'C',6,'STANDARD'),(2,'C',7,'STANDARD'),(2,'C',8,'STANDARD'),(2,'C',9,'STANDARD'),(2,'C',10,'STANDARD'),
+(2,'D',1,'STANDARD'),(2,'D',2,'STANDARD'),(2,'D',3,'STANDARD'),(2,'D',4,'STANDARD'),(2,'D',5,'STANDARD'),(2,'D',6,'STANDARD'),(2,'D',7,'STANDARD'),(2,'D',8,'STANDARD'),(2,'D',9,'STANDARD'),(2,'D',10,'STANDARD'),
+(2,'E',1,'STANDARD'),(2,'E',2,'STANDARD'),(2,'E',3,'STANDARD'),(2,'E',4,'STANDARD'),(2,'E',5,'STANDARD'),(2,'E',6,'STANDARD'),(2,'E',7,'STANDARD'),(2,'E',8,'STANDARD'),(2,'E',9,'STANDARD'),(2,'E',10,'STANDARD'),
+(2,'F',1,'RECLINER'),(2,'F',2,'RECLINER'),(2,'F',3,'RECLINER'),(2,'F',4,'RECLINER'),(2,'F',5,'RECLINER'),(2,'F',6,'RECLINER'),(2,'F',7,'RECLINER'),(2,'F',8,'RECLINER'),(2,'F',9,'RECLINER'),(2,'F',10,'RECLINER'),
+-- ── Screen 3 ──
+(3,'A',1,'PREMIUM'),(3,'A',2,'PREMIUM'),(3,'A',3,'PREMIUM'),(3,'A',4,'PREMIUM'),(3,'A',5,'PREMIUM'),(3,'A',6,'PREMIUM'),(3,'A',7,'PREMIUM'),(3,'A',8,'PREMIUM'),(3,'A',9,'PREMIUM'),(3,'A',10,'PREMIUM'),
+(3,'B',1,'PREMIUM'),(3,'B',2,'PREMIUM'),(3,'B',3,'PREMIUM'),(3,'B',4,'PREMIUM'),(3,'B',5,'PREMIUM'),(3,'B',6,'PREMIUM'),(3,'B',7,'PREMIUM'),(3,'B',8,'PREMIUM'),(3,'B',9,'PREMIUM'),(3,'B',10,'PREMIUM'),
+(3,'C',1,'STANDARD'),(3,'C',2,'STANDARD'),(3,'C',3,'STANDARD'),(3,'C',4,'STANDARD'),(3,'C',5,'STANDARD'),(3,'C',6,'STANDARD'),(3,'C',7,'STANDARD'),(3,'C',8,'STANDARD'),(3,'C',9,'STANDARD'),(3,'C',10,'STANDARD'),
+(3,'D',1,'STANDARD'),(3,'D',2,'STANDARD'),(3,'D',3,'STANDARD'),(3,'D',4,'STANDARD'),(3,'D',5,'STANDARD'),(3,'D',6,'STANDARD'),(3,'D',7,'STANDARD'),(3,'D',8,'STANDARD'),(3,'D',9,'STANDARD'),(3,'D',10,'STANDARD'),
+(3,'E',1,'STANDARD'),(3,'E',2,'STANDARD'),(3,'E',3,'STANDARD'),(3,'E',4,'STANDARD'),(3,'E',5,'STANDARD'),(3,'E',6,'STANDARD'),(3,'E',7,'STANDARD'),(3,'E',8,'STANDARD'),(3,'E',9,'STANDARD'),(3,'E',10,'STANDARD'),
+(3,'F',1,'RECLINER'),(3,'F',2,'RECLINER'),(3,'F',3,'RECLINER'),(3,'F',4,'RECLINER'),(3,'F',5,'RECLINER'),(3,'F',6,'RECLINER'),(3,'F',7,'RECLINER'),(3,'F',8,'RECLINER'),(3,'F',9,'RECLINER'),(3,'F',10,'RECLINER'),
+-- ── Screen 4 ──
+(4,'A',1,'PREMIUM'),(4,'A',2,'PREMIUM'),(4,'A',3,'PREMIUM'),(4,'A',4,'PREMIUM'),(4,'A',5,'PREMIUM'),(4,'A',6,'PREMIUM'),(4,'A',7,'PREMIUM'),(4,'A',8,'PREMIUM'),(4,'A',9,'PREMIUM'),(4,'A',10,'PREMIUM'),
+(4,'B',1,'PREMIUM'),(4,'B',2,'PREMIUM'),(4,'B',3,'PREMIUM'),(4,'B',4,'PREMIUM'),(4,'B',5,'PREMIUM'),(4,'B',6,'PREMIUM'),(4,'B',7,'PREMIUM'),(4,'B',8,'PREMIUM'),(4,'B',9,'PREMIUM'),(4,'B',10,'PREMIUM'),
+(4,'C',1,'STANDARD'),(4,'C',2,'STANDARD'),(4,'C',3,'STANDARD'),(4,'C',4,'STANDARD'),(4,'C',5,'STANDARD'),(4,'C',6,'STANDARD'),(4,'C',7,'STANDARD'),(4,'C',8,'STANDARD'),(4,'C',9,'STANDARD'),(4,'C',10,'STANDARD'),
+(4,'D',1,'STANDARD'),(4,'D',2,'STANDARD'),(4,'D',3,'STANDARD'),(4,'D',4,'STANDARD'),(4,'D',5,'STANDARD'),(4,'D',6,'STANDARD'),(4,'D',7,'STANDARD'),(4,'D',8,'STANDARD'),(4,'D',9,'STANDARD'),(4,'D',10,'STANDARD'),
+(4,'E',1,'STANDARD'),(4,'E',2,'STANDARD'),(4,'E',3,'STANDARD'),(4,'E',4,'STANDARD'),(4,'E',5,'STANDARD'),(4,'E',6,'STANDARD'),(4,'E',7,'STANDARD'),(4,'E',8,'STANDARD'),(4,'E',9,'STANDARD'),(4,'E',10,'STANDARD'),
+(4,'F',1,'RECLINER'),(4,'F',2,'RECLINER'),(4,'F',3,'RECLINER'),(4,'F',4,'RECLINER'),(4,'F',5,'RECLINER'),(4,'F',6,'RECLINER'),(4,'F',7,'RECLINER'),(4,'F',8,'RECLINER'),(4,'F',9,'RECLINER'),(4,'F',10,'RECLINER');
 
 -- ─── SHOWS (3 per movie across different screens) ───────────
 INSERT INTO shows (movie_id, screen_id, show_date, show_time, price) VALUES

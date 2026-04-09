@@ -9,7 +9,7 @@ Front-end is plain **HTML / CSS / JS**. Backend is **MySQL + PHP (PDO)**.
 
 | Layer       | Tech                               |
 |-------------|------------------------------------|
-| Database    | MySQL 8 (7 tables, 2 views, 1 proc) |
+| Database    | MySQL 5.6+ / 8 (7 tables, 2 views)  |
 | Backend     | PHP 7.4+ (PDO, JSON REST)          |
 | Frontend    | HTML5, CSS3, vanilla JS (fetch)    |
 
@@ -62,10 +62,14 @@ SceneKyaHai/
 - `vw_show_details` — shows joined with movie + theater + screen
 - `vw_seat_status`  — live `AVAILABLE / BOOKED` status per seat per show
 
-### Stored procedure
+### Transactions
 
-- `sp_book_seats(user_id, show_id, seat_csv, OUT booking_id)`
-  atomic seat reservation with collision-check (raises `SQLSTATE 45000` if any seat is already taken).
+Bookings are created atomically inside a PHP `BEGIN / COMMIT` transaction
+(see [api/booking.php](api/booking.php)). The transaction uses
+`SELECT ... FOR UPDATE` to lock both the `shows` row and any conflicting
+`booking_seats` rows before inserting, so concurrent booking attempts for
+the same seat are properly serialized. The `UNIQUE (booking_id, seat_id)`
+constraint and foreign keys provide a second line of defense at the DB layer.
 
 ### ER relationships
 
