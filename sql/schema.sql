@@ -10,18 +10,21 @@
 --                            select it in phpMyAdmin, then Import.
 -- ═══════════════════════════════════════════════════════════════
 
--- Clean slate: drop existing objects (safe to re-run)
-DROP VIEW      IF EXISTS vw_seat_status;
-DROP VIEW      IF EXISTS vw_show_details;
-DROP PROCEDURE IF EXISTS sp_book_seats;
-DROP TABLE     IF EXISTS booking_seats;
-DROP TABLE     IF EXISTS bookings;
-DROP TABLE     IF EXISTS shows;
-DROP TABLE     IF EXISTS seats;
-DROP TABLE     IF EXISTS screens;
-DROP TABLE     IF EXISTS theaters;
-DROP TABLE     IF EXISTS movies;
-DROP TABLE     IF EXISTS users;
+-- Clean slate: drop existing objects (safe to re-run).
+-- Note: we intentionally do NOT drop stored procedures here — some shared
+-- hosts block DROP/ALTER ROUTINE for non-privileged users. An orphan
+-- procedure (if any) from a previous import is harmless because nothing
+-- in this schema/codebase calls it.
+DROP VIEW  IF EXISTS vw_seat_status;
+DROP VIEW  IF EXISTS vw_show_details;
+DROP TABLE IF EXISTS booking_seats;
+DROP TABLE IF EXISTS bookings;
+DROP TABLE IF EXISTS shows;
+DROP TABLE IF EXISTS seats;
+DROP TABLE IF EXISTS screens;
+DROP TABLE IF EXISTS theaters;
+DROP TABLE IF EXISTS movies;
+DROP TABLE IF EXISTS users;
 
 -- ─── 1. USERS ────────────────────────────────────────────────
 CREATE TABLE users (
