@@ -1,0 +1,21 @@
+# ── Local / server-only DB credentials ─────────────────
+api/config.local.php
+
+# ── OS junk ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Editors / IDEs ──────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Logs ────────────────────────────────────────────────
+*.log
+
+# ── PHP / Composer (in case you ever add it) ────────────
+vendor/
+composer.lock

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCENE KYA HAI? · BOOK MOVIE TICKETS</title>
+    <link rel="icon" type="image/svg+xml" href="assets/logo-mark.svg" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ═══ OVERLAYS ═══ -->
+    <div class="noise"></div>
+    <div class="scanlines"></div>
+
+    <!-- ═══ NAV ═══ -->
+    <nav>
+        <a class="nav-brand" href="#hero">
+            <img src="assets/logo-mark.svg" alt="SceneKyaHai" />
+            <span class="brand-name">SCENE KYA HAI?</span>
+        </a>
+        <div class="nav-items">
+            <a class="nav-item" href="#hero">[00] HOME</a>
+            <a class="nav-item" href="#movies">[01] MOVIES</a>
+            <a class="nav-item" href="#about">[02] ABOUT</a>
+            <a class="nav-item" href="#contact">[03] CONTACT</a>
+        </div>
+        <div class="nav-actions">
+            <a href="#movies" class="btn btn-red">BOOK NOW →</a>
+        </div>
+    </nav>
+
+    <!-- ═══ HERO ═══ -->
+    <section id="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-vignette"></div>
+
+        <div class="hero-center">
+            <div class="logo-wrap">
+                <div class="scan-line"></div>
+                <img src="assets/logo.svg" alt="SceneKyaHai Logo" class="hero-logo" />
+            </div>
+            <div class="hero-tagline">BOOK THE SCREEN. OWN THE MOMENT.</div>
+            <div class="hero-sub">MUMBAI &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; VOLUME 01</div>
+        </div>
+
+        <div class="hero-meta">
+            <div>
+                <span>EST. BOMBAY 2026</span>
+                <span>PROTOCOL: MOVIE ACCESS LAYER</span>
+            </div>
+            <div style="text-align:right;">
+                <span>5 TITLES LIVE · 3 THEATERS</span>
+                <span>SOUND // LIGHT // CELLULOID</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ MARQUEE ═══ -->
+    <div class="marquee-wrap">
+        <div class="marquee-track">
+            <span>SCENE KYA HAI?</span><span>◆</span><span>NOW BOOKING</span><span>◆</span><span>DUNE · OPPENHEIMER · KALKI · JAWAN · INTERSTELLAR</span><span>◆</span><span>IMAX CERTIFIED</span><span>◆</span><span>BOMBAY 2026</span><span>◆</span>
+            <span>SCENE KYA HAI?</span><span>◆</span><span>NOW BOOKING</span><span>◆</span><span>DUNE · OPPENHEIMER · KALKI · JAWAN · INTERSTELLAR</span><span>◆</span><span>IMAX CERTIFIED</span><span>◆</span><span>BOMBAY 2026</span><span>◆</span>
+        </div>
+    </div>
+
+    <!-- ═══ MOVIES ═══ -->
+    <section id="movies">
+        <div class="section-inner">
+            <div class="section-label">[01] NOW SHOWING</div>
+            <h2 class="section-title">Pick your<br /><em>scene.</em></h2>
+
+            <div id="movies-grid" class="movies-grid">
+                <div class="loading-state">LOADING FEED...</div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="rule" />
+
+    <!-- ═══ ABOUT ═══ -->
+    <section id="about">
+        <div class="section-inner">
+            <div class="section-label">[02] ABOUT</div>
+            <h2 class="section-title">Not just tickets.<br /><em>Access.</em></h2>
+            <div style="max-width:760px; color:var(--text-muted); font-size:13px; line-height:2; letter-spacing:0.4px;">
+                <p>SceneKyaHai is a brutalist movie-ticket booking system built as a DBMS demonstration — a fully normalized SQL backend (MySQL) powering a stripped-down front-end. No clutter. No dark patterns. Just select, sit, and stare at the screen.</p>
+                <p style="margin-top:14px;">Every booking is an atomic transaction — seat collisions are rejected at the database layer via a stored procedure, not just in the UI. The seat map you see is a live <code style="color:var(--red)">VIEW</code> on top of the bookings table.</p>
+            </div>
+
+            <div class="about-specs" style="margin-top:40px; display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border-blue); border:1px solid var(--border-blue);">
+                <div style="padding:18px 22px; background:var(--bg);">
+                    <div style="font-size:9px; letter-spacing:3px; color:var(--text-muted); margin-bottom:6px;">ENGINE</div>
+                    <div style="font-size:14px; color:var(--red);">MYSQL 8</div>
+                </div>
+                <div style="padding:18px 22px; background:var(--bg);">
+                    <div style="font-size:9px; letter-spacing:3px; color:var(--text-muted); margin-bottom:6px;">API</div>
+                    <div style="font-size:14px; color:var(--red);">PHP / PDO</div>
+                </div>
+                <div style="padding:18px 22px; background:var(--bg);">
+                    <div style="font-size:9px; letter-spacing:3px; color:var(--text-muted); margin-bottom:6px;">TABLES</div>
+                    <div style="font-size:14px;">7</div>
+                </div>
+                <div style="padding:18px 22px; background:var(--bg);">
+                    <div style="font-size:9px; letter-spacing:3px; color:var(--text-muted); margin-bottom:6px;">VIEWS</div>
+                    <div style="font-size:14px;">2</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="rule" />
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer id="contact">
+        <div>
+            <span style="opacity:0.8; margin-bottom:5px;">SCENE KYA HAI?</span>
+            <span>EST. BOMBAY 2026 · PROTOCOL: VOL.01</span>
+            <span>BUILT FOR DBMS · NORMALIZED TO 3NF</span>
+            <span style="margin-top:10px;">© 2026 SCENEKYAHAI.</span>
+        </div>
+        <img src="assets/logo-mark.svg" alt="SKH" class="foot-logo" />
+        <div class="foot-right">
+            <span style="opacity:0.8; margin-bottom:5px;">ソフトウェア · 信頼</span>
+            <span>hello@scenekyahai.in</span>
+            <span>@scenekyahai</span>
+            <span class="accent" style="margin-top:10px;">BOMBAY</span>
+        </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!--         MODAL 1 · SHOWTIME PICKER          -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="modal" id="modal-shows">
+        <div class="modal-box">
+            <button class="modal-close" data-close="modal-shows">X</button>
+            <div class="modal-title" id="show-movie-title">—</div>
+            <div class="modal-sub" id="show-movie-meta">—</div>
+            <div id="shows-list">
+                <div class="loading-state">LOADING SHOWS...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!--         MODAL 2 · SEAT SELECTION           -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="modal" id="modal-seats">
+        <div class="modal-box">
+            <button class="modal-close" data-close="modal-seats">X</button>
+            <div class="modal-title" id="seat-movie-title">—</div>
+            <div class="modal-sub" id="seat-show-meta">—</div>
+
+            <div class="screen-indicator">
+                SCREEN
+                <div class="screen-bar"></div>
+            </div>
+
+            <div class="seat-map" id="seat-map">
+                <div class="loading-state">LOADING SEATS...</div>
+            </div>
+
+            <div class="seat-legend">
+                <div><span class="box"></span>AVAILABLE</div>
+                <div><span class="box sel"></span>SELECTED</div>
+                <div><span class="box book"></span>BOOKED</div>
+                <div><span class="box rec"></span>RECLINER</div>
+            </div>
+
+            <div class="checkout-bar">
+                <div class="checkout-summary">
+                    <span id="selected-count">0 SEATS</span>
+                    <strong id="checkout-total">₹0</strong>
+                </div>
+                <button id="confirm-booking-btn" class="btn btn-red" disabled>CONFIRM BOOKING →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!--         MODAL 3 · CONFIRMATION             -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="modal" id="modal-confirm">
+        <div class="modal-box" style="max-width:620px;">
+            <button class="modal-close" data-close="modal-confirm">X</button>
+            <div class="confirm-ticket" id="confirm-ticket">
+                <div class="confirm-head">
+                    <h3 id="cf-title">BOOKING CONFIRMED</h3>
+                    <div class="confirm-id">
+                        <div>BOOKING ID</div>
+                        <div id="cf-id" style="color:var(--text-main); font-size:14px; margin-top:4px;">#----</div>
+                    </div>
+                </div>
+                <div class="confirm-grid">
+                    <div class="confirm-cell"><span class="lbl">MOVIE</span><span class="val" id="cf-movie">—</span></div>
+                    <div class="confirm-cell"><span class="lbl">DATE / TIME</span><span class="val" id="cf-datetime">—</span></div>
+                    <div class="confirm-cell"><span class="lbl">THEATER</span><span class="val" id="cf-theater">—</span></div>
+                    <div class="confirm-cell"><span class="lbl">SCREEN</span><span class="val" id="cf-screen">—</span></div>
+                    <div class="confirm-cell"><span class="lbl">SEATS</span><span class="val" id="cf-seats">—</span></div>
+                    <div class="confirm-cell"><span class="lbl">AMOUNT</span><span class="val" id="cf-amount" style="color:var(--red);">—</span></div>
+                </div>
+                <div style="margin-top:24px; padding-top:18px; border-top:1px dashed var(--border-blue); text-align:center; font-size:10px; letter-spacing:3px; color:var(--text-muted);">
+                    SHOW THIS SCREEN AT ENTRY · SCENEKYAHAI · BOMBAY
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:24px;">
+                <button class="btn btn-blue" data-close="modal-confirm">CLOSE [X]</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
